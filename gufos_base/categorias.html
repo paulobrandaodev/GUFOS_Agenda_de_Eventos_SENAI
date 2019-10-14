@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Categorias</title>
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="container">
+            <img src="img/icon-login.png" alt="Logo do Gufos">
+            <nav>
+                <ul>
+                    <li><a href="home.html" title="Gufos Home">Home</a></li>
+                    <li><a href="eventos.html" title="Gufos Eventos">Eventos</a></li>
+                    <li><a href="categorias.html" title="Gufos Categorias">Categorias</a></li>
+                    <li><a href="usuario.html" title="Gufos Usuário">Usuario</a></li>
+                    <li><a href="login.html" title="Gufos Sair">Sair</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <div class="card">
+                <h3>Lista de Categorias</h3>
+                <table>
+                    <thead>
+                        <th>ID</th>
+                        <th>Categoria</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Workshop</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Meetup</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Palestra</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <!-- Mesclar 2 colunas -->
+                            <td colspan="2">
+                                <nav>
+                                    <ul>
+                                        <li>Anterior</li>
+                                        <li>1</li>
+                                        <li>2</li>
+                                        <li>3</li>
+                                        <li>Próxima</li>
+                                    </ul>
+                                </nav>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="card">
+                <h3>Cadastrar Categoria</h3>
+                <form method="POST" id="form_cadastro">
+
+                    <label>Categoria</label>
+                        <input 
+                            type="text" 
+                            placeholder="Digite a categoria..." 
+                            aria-label="Digitar a categoria"
+                            name="categoria" 
+                            required
+                        >                    
+
+                    <button type="submit">Salvar</button>
+
+                </form>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>Escola SENAI de Informática - © 2019</p>
+    </footer>
+
+</body>
+
+</html>
