@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>backend</name>
+    </assembly>
+    <members>
+        <member name="M:backend.Controllers.EventoController.Get">
+            <summary>
+            Pegamos todos os eventos cadastrados
+            </summary>
+            <returns>Lista de eventos</returns>
+        </member>
+    </members>
+</doc>
