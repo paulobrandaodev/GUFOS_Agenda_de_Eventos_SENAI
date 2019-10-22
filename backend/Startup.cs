@@ -14,6 +14,9 @@ using Newtonsoft.Json;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.IO;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
 
 
 // Instalamos o Entity Framework
@@ -38,6 +41,11 @@ using System.IO;
 
 // Instalamos o pacote
 // dotnet add backend.csproj package Swashbuckle.AspNetCore -v 5.0.0-rc4
+
+// JWT - JSON WEB Token
+
+// Adicionamos o pacote JWT
+// dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer --version 3.0.0
 
 
 namespace backend
@@ -86,6 +94,9 @@ namespace backend
             app.UseSwaggerUI(c => {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json","API V1");
             });
+
+            // Usamos efetivamente a autenticação
+            app.UseAuthentication();
 
             app.UseHttpsRedirection();
 

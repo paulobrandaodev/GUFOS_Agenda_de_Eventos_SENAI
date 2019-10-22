@@ -4,16 +4,18 @@ using backend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsuarioController : ControllerBase
     {
         GufosContext _context = new GufosContext();
 
-        // GET: api/Usuario/
+        // GET: api/Usuario/        
         [HttpGet]
         public async Task<ActionResult<List<Usuario>>> Get()
         {

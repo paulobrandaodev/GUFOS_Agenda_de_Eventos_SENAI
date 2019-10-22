@@ -12,7 +12,6 @@ namespace backend.Controllers
     {
         GufosContext _context = new GufosContext();
 
-
         // GET: api/Presenca/
         [HttpGet]
         public async Task<ActionResult<List<Presenca>>> Get()
