@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace backend.Models
+namespace backend.Domains
 {
     public partial class GufosContext : DbContext
     {
@@ -26,7 +26,7 @@ namespace backend.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=N-1S-DEV-16; Database=Gufos; Trusted_Connection=true");
+                optionsBuilder.UseSqlServer("Server=N-1S-DEV-16;Database=Gufos;Trusted_Connection=True;");
             }
         }
 
