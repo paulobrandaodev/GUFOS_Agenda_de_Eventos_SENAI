@@ -7,54 +7,47 @@ using backend.Domains;
 using backend.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace backend.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
+    [ApiController]    
     public class LoginController : ControllerBase
     {
-        // Chamamos nosso contexto da base de dados
         GufosContext _context = new GufosContext();
 
-        // Definimos uma variável para percorrer nossos métodos com as configurações obtidas no appsettings.json
+        // Definimos uma variavel para percorre nossos métodos com as configurações obtidas no appSettings.json
         private IConfiguration _config;
 
-        // Definimos um método contrutor para poder acessar estas configs ^
-        public LoginController(IConfiguration config){
+        // Definimos um método contrutor para poder acessar estas configs
+        public LoginController(IConfiguration config) {
             _config = config;
         }
 
-        // Chamamos nosso método para validar o usuário na aplicação
-        private Usuario ValidaUsuario(LoginViewModel login){
-
-            var usuario = _context.Usuario.FirstOrDefault( 
-                u => u.Email == login.Email && 
-                u.Senha == login.Senha
-            );
-
+        private Usuario ValidaUsuario(LoginViewModel login) {
+            var usuario = _context.Usuario.Include("TipoUsuario").FirstOrDefault(u => u.Email == login.Email && u.Senha == login.Senha);
             return usuario;
         }
 
-        // Geramos o Token
-        private string GerarToken(Usuario userInfo){
-
-            // Definimos a criptografia do nosso Token
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));   
-
+        private string GerarToken(Usuario userInfo) {
+            // Definem a criptografia do token
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            // Definimos nossas Claims (dados da sessão)
+            // Definem as Claims (dados da sessão)
             var claims = new[] {
                 new Claim(JwtRegisteredClaimNames.NameId, userInfo.Nome),
                 new Claim(JwtRegisteredClaimNames.Email, userInfo.Email),
+                new Claim(ClaimTypes.Role, userInfo.TipoUsuario.Titulo),
+                new Claim("Role", userInfo.TipoUsuario.Titulo),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
-            // Confiramos nosso Token e seu tempo de vida
-            var token = new JwtSecurityToken(
+            // Confirma o token e seu tempo de vida
+            var token = new JwtSecurityToken (
                 _config["Jwt:Issuer"],
                 _config["Jwt:Issuer"],
                 claims,
@@ -65,23 +58,19 @@ namespace backend.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-
         // Usamos essa anotação para ignorar a autenticação nesse método
         [AllowAnonymous]
         [HttpPost]
         public IActionResult Login([FromBody]LoginViewModel login){
-            
             IActionResult response = Unauthorized();
             var user = ValidaUsuario(login);
 
-            if(user != null){
+            if(user != null) {
                 var tokenString = GerarToken(user);
-                response = Ok( new { token = tokenString });
+                response = Ok(new {token = tokenString});
             }
 
             return response;
-        }
-
-
+        }   
     }
 }

@@ -1,88 +1,83 @@
+using backend.Domains;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using backend.Domains;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using backend.Repositories;
+using Microsoft.AspNetCore.Authorization;
+
+// Adiciona a arvore de objetos 
+// dotnet add package Microsoft.AspNetCore.Mvc.NewtonsoftJson
+
 
 namespace backend.Controllers
 {
-    [Route("api/[controller]")]
+    // Define a rota do controller, e diz que é um controller de API
+    [Route("api/[controller]")] 
     [ApiController]
+    [Authorize]
     public class PresencaController : ControllerBase
     {
-        GufosContext _context = new GufosContext();
+        PresencaRepository _repositorio = new PresencaRepository();
 
-        // GET: api/Presenca/
+        // GET: api/Presenca
         [HttpGet]
         public async Task<ActionResult<List<Presenca>>> Get()
         {
-            var presencas = await _context.Presenca.Include("Evento").Include("Usuario").ToListAsync();
+            var presencas = await _repositorio.Listar();
 
-            if (presencas == null)
-            {
+            if(presencas == null) {
                 return NotFound();
             }
 
             return presencas;
         }
-
-        // GET: api/Presenca/5
+        
+        // GET: api/Presenca/2
         [HttpGet("{id}")]
         public async Task<ActionResult<Presenca>> Get(int id)
         {
-            var presenca = await _context.Presenca.Include("Evento").Include("Usuario").FirstOrDefaultAsync(e => e.PresencaId == id);
+            var presenca = await _repositorio.BuscarPorID(id);
 
-            if (presenca == null)
-            {
+            if(presenca == null) {
                 return NotFound();
             }
 
             return presenca;
         }
 
-        // POST: api/Presenca/
+        // POST: api/Presenca
         [HttpPost]
         public async Task<ActionResult<Presenca>> Post(Presenca presenca)
         {
             try
             {
-                await _context.AddAsync(presenca);
-                await _context.SaveChangesAsync();
+                await _repositorio.Salvar(presenca);
             }
             catch (DbUpdateConcurrencyException)
             {
                 throw;
             }
-
+            
             return presenca;
-        }        
+        }
 
-
-        // PUT: api/Presenca/5
+        // PUT
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(long id, Presenca presenca)
+        public async Task<ActionResult> Put(int id, Presenca presenca)
         {
-            if (id != presenca.PresencaId)
-            {
+            if(id != presenca.PresencaId){
                 return BadRequest();
             }
 
-            _context.Entry(presenca).State = EntityState.Modified;
+            try {
+                await _repositorio.Alterar(presenca);
+            } catch (DbUpdateConcurrencyException) {
+                var presenca_valido = await _repositorio.BuscarPorID(id);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                var presenca_valido = await _context.Presenca.FindAsync(id);
-
-                if (presenca_valido == null)
-                {
+                if(presenca_valido == null) {
                     return NotFound();
-                }
-                else
-                {
+                } else {
                     throw;
                 }
             }
@@ -90,23 +85,16 @@ namespace backend.Controllers
             return NoContent();
         }
 
-        // DELETE: api/Presenca/5
+        // DELETE api/presenca/id
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Presenca>> Delete(int id)
-        {
-            var presenca = await _context.Presenca.FindAsync(id);
-            if (presenca == null)
-            {
+        public async Task<ActionResult<Presenca>> Delete(int id){
+            var presenca = await _repositorio.BuscarPorID(id);
+
+            if(presenca == null) {
                 return NotFound();
-            }
-
-            _context.Presenca.Remove(presenca);
-            await _context.SaveChangesAsync();
-
+            }            
+            
             return presenca;
         }
-
-
-
     }
 }
